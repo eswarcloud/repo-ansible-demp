@@ -1,0 +1,57 @@
+---
+    - name: Create group
+      group:
+       name: "{{ web_grp }}"
+       state: present
+
+    - name: Create user
+      user:
+       name: "{{ web_user }}"
+       group: "{{ web_grp }}"
+       state: present
+       password: "Hello@123"
+       update_password: on_create
+
+    - name: Create directory for tomcat installation.
+      file:
+       path: '{{ tc_install_path }}'
+       owner: '{{ web_user }}'
+       group: '{{ web_grp }}'
+       mode: 0775
+       state: directory
+
+    - name: Package copy
+      copy:
+       src: '{{ file_path }}/{{ tomcat_package }}'
+       dest: '{{ tc_install_path }}'
+       owner: '{{ web_user }}'
+       group: '{{ web_grp }}'
+       mode: 0775
+
+    - name: extract the tomcat installer
+      become: yes
+      become_user: '{{ web_user }}'
+      shell : |
+       cd {{ tc_install_path }}
+       tar -xvf {{ tomcat_package }}
+
+    - name: Changing configuration files
+      become: yes
+      become_user: '{{ web_user }}'
+      lineinfile: dest={{ tc_install_path }}/apache-tomcat-{{ ver_no }}/bin/startup.sh backup=yes line='export CATALINA_OPTS="-Xms1024m -Xmx4096m -XX:PermSize=512m -XX:MaxPermSize=1024m"' insertafter='done' state=present
+
+
+    - name: Populating bash profile
+      become: yes
+      become_user: '{{ web_user }}'
+      lineinfile: dest=/home/{{ web_user }}/.bashrc backup=yes line='export CATALINA_HOME={{ tc_install_path }}/apache-tomcat-{{ ver_no }}' insertafter='EOF' state=present
+
+    - name: Starting tomcat
+      become: yes
+      become_user: '{{ web_user }}'
+      shell : |
+       source /home/{{ web_user }}/.bashrc
+       cd {{ tc_install_path }}/apache-tomcat-{{ ver_no }}/bin
+       sleep 5
+       nohup ./startup.sh &
+

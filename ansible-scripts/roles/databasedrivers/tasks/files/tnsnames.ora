@@ -1,0 +1,10 @@
+SIDDEV =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = dc1oraedwtst01.cent.com)(PORT = 5693))
+    )
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = siddev)
+    )
+  )

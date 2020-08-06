@@ -1,0 +1,7 @@
+file_path: /home/ansible/packages
+coop_package: AbInitio.V3-3-5-0.Linux-x86_gcc4p64.tar.gz
+ai_version: 3-3-5-0
+ai_user: aiuser
+ai_grp: aigroup
+comment: new user
+install_path: /opt/abinitio/installs/ai/abroot

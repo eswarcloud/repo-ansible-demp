@@ -1,0 +1,51 @@
+##Variables for Postgres Installation###########
+comment: new user for postgres installation
+file_path: /tmp/installables
+file: postgresql-9.5.2.tar.gz
+uname: psql
+pghome: /opt/psql
+pgdata: /persist/data/postgres/dbdata
+pgver: 9.5.2
+###########Variables for tomcat Installation#####
+file_path: /tmp/installables
+tomcat_ver: 8.0.27
+tomcat_user: tomcat
+tomcat_install_dir: /opt/tomcat
+tomcat_group: tomcat 
+#######variables for Ab Initio products###########
+ai_user: svc_abiadm
+ai_grp: azabiadm
+file_path: /tmp/installables
+cc_package: ControlCenter.V3-5-2-1.tar.gz
+cc_ver_num: 3.5.2.1
+db_host: azruswabiwebd01.cent.com
+mhub_package: MetadataHub.V3-3-6-0.tar.gz
+####Express IT version numer in format 3-5-1-0
+ver_num: 3-5-2-2
+eit_package: AIAppConf.V3-5-2-2.tar.gz
+deployment_name: aiappconf
+mhub_package: MetadataHub.V3-3-6-0.tar.gz
+bridge_port: 7070
+bridge_host: azruswabiapp01d.cent.com
+web_host: azruswabiwebd01.cent.com
+#####Ab Initio Installation variables############
+file_path: /tmp/installables
+coop_package: AbInitio.V3-5-2-5.Linux-x86_gcc4p64.tar.gz
+ai_version: 3-5-2-5
+ai_user: svc_abiadm
+ai_grp: azabiadm
+comment: new user
+install_path: /opt/abinitio/abroot
+#For Tomcat-new role
+tomcat_user: tomcat
+ugroup: tomcat
+uusername: tomcat
+ugroup: tomcat
+tomcat_install_dir: /opt/tomcat
+# Mount paths
+eme_backup: /persist/abinitio/repository
+postgres_data: /persist/data/postgres
+ab_work_dir: /persist/abinitio/work
+data_directories: /persist/data
+ab_mfs_dir1: /persist/mfs_part1
+ab_mfs_dir2: /persist/mfs_part2

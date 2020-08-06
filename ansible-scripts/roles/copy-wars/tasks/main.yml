@@ -1,0 +1,31 @@
+---
+
+   - name: War File copy
+     copy:
+       src: '/tmp/war_files'
+       dest: '/tmp'
+       owner: '{{ tomcat_user }}'
+       group: '{{ tomcat_user }}'
+       mode: 0775
+
+   - name: Moving wars to CATALINA HOME
+     ignore_errors: True
+     become: yes
+     become_user: '{{ tomcat_user }}'
+     shell: |
+        cd /home/{{ tomcat_user }}
+        source /home/{{ tomcat_user }}/.bashrc
+        cd $CATALINA_HOME/webapps
+        cp /tmp/war_files/*.war .
+
+   - name: Display post installation message
+     debug:
+       msg:
+         - 'URL for Controlcenter is : http://{{ web_host }}:8080/controlcenter'
+         - 'Next step for Controlcenter ::: '
+         - 'Set AB_OPS_CONSOLE_URL in Co>Op configuration file and restart bridge process. '
+         - 'URL for Express IT is: http://{{ web_host }}:8080/{{ deployment_name }}'
+         - 'Next step for Express IT ::: '
+         - 'Express IT needs to be configured in Co>Op configuration file'
+         - 'Please check if bridge is running on specified port'
+

@@ -1,0 +1,19 @@
+---
+
+    - name: install ksh
+      package:
+       name: ksh
+       state: present
+
+    - name: install gdb
+      package:
+       name: gdb
+       state: present
+
+    - name: Create directory to save war file
+      become: no
+      file:
+       path: '/tmp/war_files'
+       state: directory
+       mode: 0775
+      delegate_to: localhost

@@ -1,0 +1,94 @@
+## Parameter file for 'Metadata Hub' or 'Authorization Gateway' deployment
+deployment.type_basic: 'N'
+
+deployment.name: 'mhub'
+
+db.type: 'postgresql'
+
+db.host: '{{ db_host }}'
+
+db.name: 'mhub_db'
+
+db.create: Y
+
+db.port: '5432'
+
+db.admin.username: 'mhubuser'
+db.admin.password: ''
+db.admin.mhub_encrypted_password: 'uqdGrLg03mNysgkL65WpBA=='
+
+
+# db.appserver.username:
+db.appserver.password: ''
+db.appserver.mhub_encrypted_password: 'uqdGrLg03mNysgkL65WpBA=='
+
+# db.importer.username:
+db.importer.password: ''
+db.importer.mhub_encrypted_password: 'uqdGrLg03mNysgkL65WpBA=='
+db.importer.ab_encrypted_password: '2,,OI8Vm1KhSXI9hJKQQ-xqcED3i2RzX0tW3kgFtKlHgps'
+db.importer.abv1_encrypted_password: 'WYL_wPEizPv0xQl-Yqr8EU'
+
+
+# db.report.username:
+db.report.password: ''
+db.report.mhub_encrypted_password: 'uqdGrLg03mNysgkL65WpBA=='
+
+
+ui.webaccess.admin.password: ''
+
+ui.webaccess.admin.password_hash_encrypted: 'B1(2a,10):UkGI2TeEiaorYYp0rFRoWw==:$2a$10$SiEG0RcCgYmpWWnypDPmUum12WRrqZEC8h4gCpPcIaTzUaoNtFOKK'
+## Hashed password used for the 'admin' account, used when logging in from the
+## ${PRODUCT_NAME} portal.
+
+ui.webaccess.admin.ab_encrypted_password: '2,,ve_PPLWlmOeP0SHkZKQFNg7LLHV0R1ovTUbrKoQKQ4y'
+## Encrypted password used for the 'admin' account, used by importer conn params
+
+ui.webaccess.importer.password: ''
+
+ui.webaccess.importer.password_hash_encrypted: 'B1(2a,10):XGIXd4Xl2the5MpDmqJgZg==:$2a$10$VEGVb2Vj0rfc3KnBkoHeXe.2n0RpZpAkp6b0Dl7lIMLe9cWcAILMG'
+## Hashed password used for the 'importer' account, used when logging in from the
+## ${PRODUCT_NAME} portal.
+
+ui.webaccess.importer.ab_encrypted_password: '2,,rjDoZ2aFwjuLqEJHgfhFCikx6oGvWoQvmp7pTC1P8gy'
+## Encrypted password used for the 'importer' account, used by importer conn params
+
+
+# db.datastore.destroy_if_exists: N
+
+
+db.dbc.db_nodes: 'localhost'
+
+
+
+db.dbc.encrypted_password: '2,,2OKLMkHT9HvFCAN3ZG52Bp0WY1yM8yegh6XsyyI4X4a'
+
+
+appserver.type: 'tomcat'
+
+
+webapp.clustered.deployment: 'N'
+
+appserver.host: '{{ web_host }}'
+
+
+appserver.port: '8080'
+
+
+lineage.server: 'N'
+
+bridge.rpc.aes128.key: ''
+
+
+bridge.rpc.aes128.ab_encrypted_key: '2,,rIWKGuwfATuDgCLEvgYOp5JQtuhG-cwqhBDU2JxwJIa'
+
+bridge.rpc.aes128.mhub_encrypted_key: 'Hv3jJ46VFfUc+AyWbmofS0YABIAkc3awXuzy6jnldvk='
+
+bridge.host: '{{ bridge_host }}'
+
+
+bridge.port: '{{ bridge_port }}'
+
+bridge.url: '{{ bridge_host }}:{{ bridge_port }}'
+
+##deployment.root: '/home/visheshwar.jha/mhub/mh-local-root'
+

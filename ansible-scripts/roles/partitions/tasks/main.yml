@@ -1,0 +1,48 @@
+# Create partitions with parted module
+
+- name: Create a new primary partition with a size of 50GB
+  parted:
+    device: /dev/sdc
+    label: gpt
+    name: ab_work_dir_mount
+    number: 1
+    state: present
+    part_start: 1GB
+    part_end: 51GB
+    part_type: primary
+
+
+- name: Create a new partition with a size of 974GB
+  parted:
+    device: /dev/sdc
+    label: gpt
+    name: data_mount
+    number: 2
+    state: present
+    part_start: 51GB
+    part_end: 1025GB
+    part_type: primary
+
+
+- name: Create a new partition with a size of 1.5T
+  parted:
+    device: /dev/sdc
+    label: gpt
+    name: mfs_part1_mount
+    number: 3
+    state: present
+    part_start: 1025GB
+    part_end: 2561GB
+    part_type: primary
+
+
+- name: Create a new partition with a size of 1.5T
+  parted:
+    device: /dev/sdc
+    label: gpt
+    name: mfs_part2_mount
+    number: 4
+    state: present
+    part_start: 2561GB
+    part_end: 4096GB
+    part_type: primary

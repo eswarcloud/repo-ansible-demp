@@ -1,0 +1,51 @@
+# Mount the devices created with parted command
+---
+
+ - name: Create directory if they don't exist
+   file:
+    path: "{{ item }}"
+    state: directory
+    owner: '{{ ai_user }}'
+    group: '{{ ai_grp }}'
+    mode: 0775
+   with_items:
+     - '{{ eme_backup }}'
+
+ - name: Create directory for mounting
+   file:
+    path: "{{ item }}"
+    state: directory
+    owner: '{{ uname }}'
+    group: '{{ uname }}'
+    mode: 0775
+   with_items:
+     - '{{ postgres_data }}'
+
+
+
+ - name: Formatting partitions
+   filesystem:
+    dev: /dev/sdc1
+    fstype: ext4
+
+ - name: Formatting partitions
+   filesystem:
+    dev: /dev/sdc2
+    fstype: ext4
+
+
+ - name: Mount EME FS
+   mount:
+    path: /persist/abinitio/repository
+    src: /dev/sdc1
+    fstype: ext4
+    opts: defaults
+    state: mounted
+
+ - name: Mount Postgres Data
+   mount:
+    path: /persist/data/postgres
+    src: /dev/sdc2
+    fstype: ext4
+    opts: defaults
+    state: mounted

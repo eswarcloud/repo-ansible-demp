@@ -1,0 +1,56 @@
+---
+    - name: Create directory for abinitio installation.
+      file:
+       path: '{{ install_path }}'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+       state: directory
+
+
+    - name: Create working dir
+      file:
+       path: '/tmp/abinitio'
+       state: directory
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+
+
+    - name: Package copy
+      copy:
+       src: '{{ file_path }}/{{ coop_package }}'
+       dest: '/tmp/abinitio'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+
+
+    - name: extracting Co>Op Package
+      unarchive:
+       src: '/tmp/abinitio/{{ coop_package }}'
+       dest: '/tmp/abinitio'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+       remote_src: yes
+
+    - name: Installing Co>Operating System
+      become: yes
+      ignore_errors: True
+      become_user: '{{ ai_user }}'
+      shell: |
+        pkg='{{ coop_package }}'
+        cd /tmp/abinitio/`echo $pkg | awk -F ".tar" '{print $1}'`
+        ./abinst destination={{ install_path }} owner={{ ai_user }} group={{ ai_grp }} app_hub_dest={{ install_path }}/abinitio-app-hub lser=2208 tmpdir=/tmp install_fat=true utility=/tmp/abinitio/work data_dir=/tmp/abinitio/work/data
+
+
+    - name: Populating bash profile
+      lineinfile: dest=/home/{{ ai_user }}/.bashrc backup=yes line='export AB_HOME={{ install_path }}/abinitio-V{{ ai_version }}\nexport AB_APPLICATION_HUB={{ install_path }}/abinitio-app-hub\nexport PATH=$PATH:{{ install_path }}/abinitio-V{{ ai_version }}/bin' insertafter='EOF' state=present
+
+
+    - name: Deleting working dir post installation
+      file:
+       path: '/tmp/abinitio'
+       state: absent
+

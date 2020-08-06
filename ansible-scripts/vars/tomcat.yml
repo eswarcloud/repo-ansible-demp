@@ -1,0 +1,7 @@
+file_path: /home/ansible/packages
+install_path: /opt/tomcat
+tomcat_package: apache-tomcat-8.5.38.tar.gz
+ver_no: 8.5.38
+install_path: /opt/tomcat
+web_user: tomcat
+web_grp: tcgrp

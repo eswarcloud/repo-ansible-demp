@@ -1,0 +1,69 @@
+# Mount the devices created with parted command
+---
+
+ - name: create directory if they don't exist
+   file:
+    path: "{{ item }}"
+    state: directory
+    owner: '{{ ai_user  }}'
+    group: '{{ ai_grp }}'
+    mode: 0775
+   with_items:
+     - '{{ ab_work_dir }}'
+     - '{{ data_directories }}'
+     - '{{ ab_mfs_dir1 }}'
+     - '{{ ab_mfs_dir2 }}'
+
+ - name: Formatting partitions   
+   filesystem:
+    dev: /dev/sdc1
+    fstype: ext4
+        
+ - name: Formatting partitions   
+   filesystem:
+    dev: /dev/sdc2
+    fstype: ext4
+         
+ - name: Formatting partitions   
+   filesystem:
+    dev: /dev/sdc3
+    fstype: ext4
+
+ - name: Formatting partitions
+   filesystem:
+    dev: /dev/sdc4
+    fstype: ext4
+
+ - name: Mount AB_WORK_DIR
+   mount:
+    path: /persist/abinitio/work
+    src: /dev/sdc1
+    fstype: ext4
+    opts: defaults
+    state: mounted
+
+ - name: Mount Serial,sandbox working area
+   mount:
+    path: /persist/data
+    src: /dev/sdc2
+    fstype: ext4
+    opts: defaults
+    state: mounted
+
+
+ - name: Mount mfs data files part1
+   mount:
+    path: /persist/mfs_part1
+    src: /dev/sdc3
+    fstype: ext4
+    opts: defaults
+    state: mounted
+
+
+ - name: Mount mfs data files part2
+   mount:
+    path: /persist/mfs_part2
+    src: /dev/sdc4
+    fstype: ext4
+    opts: defaults
+    state: mounted

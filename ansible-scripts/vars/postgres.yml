@@ -1,0 +1,7 @@
+comment: new user for postgres installation
+file_path: /home/ansible/packages
+file: postgresql-9.5.2.tar.gz
+uname: psql
+pghome: /opt/psql
+pgdata: /opt/psql/data
+pgver: 9.5.2 

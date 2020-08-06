@@ -1,0 +1,41 @@
+   - name: Creating workdir for installation
+     file:
+       path: '/home/{{ ai_user }}/eit-install'
+       state: directory
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0755
+
+   - name: copy ExpressIT setup.properties
+     template:
+       src: templates/setup.properties.j2
+       dest: '/home/{{ ai_user }}/eit-install/setup.properties'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0755
+   - name: File copy
+     copy:
+       src: '{{ file_path }}/{{ eit_package }}'
+       dest: '/home/{{ ai_user }}/eit-install'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+
+   - name: creating Express IT war
+     become: yes
+     become_user: '{{ ai_user }}'
+     shell: |
+        cd /home/{{ ai_user }}/eit-install
+        tar -xvf {{ eit_package }}
+        cd /home/{{ ai_user }}/eit-install/AIAppConf.V{{ ver_num }}
+        cp /home/{{ai_user}}/eit-install/setup.properties .
+        ./setup.sh batch
+        mkdir -p /tmp/app_war
+        cp {{ deployment_name }}.war /tmp/app_war
+
+   - name: Copying war file to local host
+     fetch:
+       src: /tmp/app_war/{{ deployment_name }}.war
+       dest: /tmp/war_files/
+       flat: yes
+

@@ -1,0 +1,81 @@
+## Configuration Properties used during WAR configuration by package installer.  Not used at runtime!
+pkg_application_version={{ ver_num }}
+pkg_appServer_deploy_name={{ deployment_name }}
+##pkg_installer_jar_includes=
+pkg_install_standalone=false
+pkg_install_help=false
+pkg_start_help=false
+pkg_installer_log4j_location=${ServletContext.WebAppRoot}/WEB-INF/logs/appconf.log
+pkg_installer_overlays=pkg\:/overlays/warRoot/web,pkg\:/overlays/defaultConfig/web
+pkg_installer_version=0.1
+pkg_installer_war_path={{ deployment_name }}.war
+pkg_installer_ear_path=
+pkg_mtb_auth_type=OS
+pkg_mtb_auth_use_roles=false
+pkg_mtb_auth_role_source=Fixed
+pkg_mtb_auth_users_file=users.properties
+pkg_mtb_auth_ag_url=
+pkg_mtb_auth_ag_username=
+pkg_mtb_auth_ag_password=
+pkg_mtb_auth_ag_product_id=
+pkg_mtb_auth_ag_product_name=
+pkg_mtb_auth_ag_product_description=
+pkg_mtb_auth_eme_remove_domain=true
+pkg_mtb_auth_eme_lowercase_username=false
+pkg_mtb_auth_sso_type=Header
+pkg_mtb_auth_sso_request_header=SM_USER
+pkg_mtb_auth_sso_logout_url=
+pkg_mtb_auth_sso_remove_domain=true
+pkg_mtb_auth_sso_lowercase_username=false
+pkg_mtb_auth_mhub_url=
+pkg_mtb_auth_ldap_url=
+pkg_mtb_auth_ldap_user_base=CN\=Users
+pkg_mtb_auth_ldap_user=
+pkg_mtb_auth_ldap_clear_pw=
+pkg_mtb_auth_ldap_user_query=(sAMAccountName\={0})
+pkg_mtb_auth_ldap_role_query=(&(objectClass\=group)(member\={0}))
+pkg_mtb_auth_ldap_role_attr=CN
+pkg_mtb_auth_ldap_role_base=CN\=Groups
+pkg_mtb_rpc_auth_config_id=default-aes128
+pkg_mtb_rpc_auth_security_type=aes128
+pkg_mtb_rpc_auth_user=
+pkg_mtb_rpc_auth_pw_java=Hv3jJ46VFfUc+AyWbmofS0YABIAkc3awXuzy6jnldvk\=
+pkg_mtb_host={{ bridge_host }}
+pkg_mtb_port={{ bridge_port }}
+pkg_mtb_use_https=false
+pkg_mtb_bridge_settings_type=os
+pkg_mtb_bridge_settings_file=
+pkg_proxyclient_enabled=false
+pkg_proxyclient_host_url=
+
+pkg_eme_logical_name={{ deployment_name }}
+pkg_eme_admin_user=
+pkg_eme_admin_pw_java=
+
+pkg_app_default_first=ace
+
+pkg_ag_na_advertise=false
+pkg_ag_na_url=
+
+pkg_appServer_http_port=
+pkg_appServer_https_port=
+pkg_appServer_monitor_port=
+pkg_appServer_use_https=false
+pkg_appServer_type=Tomcat
+pkg_appServer_is_liberty=false
+pkg_appServer_host=
+pkg_appServer_manager_url=
+pkg_appServer_manager_url_exact=false
+pkg_appServer_manager_username=
+pkg_appServer_manager_encrypw=
+pkg_appServer_deploy_path=/{{ deployment_name }}
+pkg_appServer_target=
+
+## Shared properties:
+pkg_security_header_frame_options_enabled=true
+pkg_security_header_frame_options_type=DENY
+pkg_application_include_flash=true
+## End of shared properties
+
+pkg_rolemap_use_identity=true
+pkg_rolemap_use_explicit=false

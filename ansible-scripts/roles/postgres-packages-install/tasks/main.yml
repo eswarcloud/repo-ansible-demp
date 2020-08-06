@@ -1,0 +1,32 @@
+---
+
+- name: install readline
+  package:
+     name: readline
+     state: present
+
+- name: install readline-devel
+  package:
+     name: readline-devel
+     state: present
+
+- name: install zlib
+  package:
+     name: zlib
+     state: present
+
+- name: install zlib-devel
+  package:
+     name: zlib-devel
+     state: present
+
+
+- name : install c++ compiler
+  package:
+     name: gcc-c++
+     state: present
+
+- name : install c compiler
+  package:
+     name: gcc
+     state: present

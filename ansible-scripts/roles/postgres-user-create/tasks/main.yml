@@ -1,0 +1,8 @@
+---
+- name: Create user
+  user:
+    name: "{{ uname }}"
+    state: present
+    comment: "{{ comment }}"
+    password: "Hello@123"
+    update_password: on_create

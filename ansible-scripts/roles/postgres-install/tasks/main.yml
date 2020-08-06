@@ -1,0 +1,129 @@
+---
+    - name: create a directory for the installer
+      file:
+       path: '/home/{{ uname }}/installs'
+       state: directory
+       owner: '{{ uname }}'
+       group: '{{ uname }}'
+
+    - name: create a directory for postgres Installtion
+      file:
+       path: '{{ pghome }}'
+       state: directory
+       owner: '{{ uname }}'
+       group: '{{ uname }}'
+
+    - name: create a directory for postgres DB data
+      file:
+       path: '{{ pgdata }}'
+       state: directory
+       owner: '{{ uname }}'
+       group: '{{ uname }}'
+
+    - name: File copy
+      copy:
+       src: '{{ file_path }}/{{ file }}'
+       dest: '/home/{{ uname }}/installs'
+       owner: '{{ uname }}'
+       group: '{{ uname }}'
+
+    - name: extract file
+      unarchive:
+       src: '/home/{{ uname }}/installs/{{ file }}'
+       dest: '/home/{{ uname }}/installs'
+       remote_src: yes
+       owner: '{{ uname }}'
+       group: '{{ uname }}'
+
+    - name: Installing postgres
+      become: yes
+      become_user: '{{ uname }}'
+      command: chdir=/home/{{ uname }}/installs/postgresql-{{ pgver }} ./configure --prefix {{ pghome }}
+
+
+    - name: Installing..
+      become: yes
+      become_user: '{{ uname }}'
+      command: chdir=/home/{{ uname }}/installs/postgresql-{{ pgver }} make
+
+    - name: Installing....
+      become: yes
+      become_user: '{{ uname }}'
+      command: chdir=/home/{{ uname }}/installs/postgresql-{{ pgver }} make install
+
+
+    - name: Installing postgres continued....
+      become: yes
+      become_user: '{{ uname }}'
+      command: chdir=/home/{{ uname }}/installs/postgresql-{{ pgver }} make install-docs
+
+    - pause: seconds=10
+
+    - name: Setting env values in profile
+      lineinfile: dest=/home/{{ uname }}/.bashrc backup=yes line='export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:{{ pghome }}/lib\nexport PG_CTL={{ pghome }}/bin/pg_ctl\nexport PSQL={{ pghome }}/bin/psql\nexport INITDB={{ pghome }}/bin/initdb\nexport CREATEDB={{ pghome }}/bin/createdb\nexport PG_HOME={{ pghome }}\nexport PGDATA={{ pghome }}/pgdata\nexport CREATELANG={{ pghome }}/bin/createlang' insertafter='EOF' state=present
+
+    - name: Initializing postgres DB
+      become: yes
+      become_user: '{{ uname }}'
+      shell: "source /home/{{ uname }}/.bashrc && $INITDB -D {{ pgdata }}"
+
+    - pause: seconds=10
+
+    - name: changing configuration file
+      become: yes
+      become_user: '{{ uname }}'
+      lineinfile: dest={{ pgdata }}/pg_hba.conf backup=yes line='host       all       all          0.0.0.0/0       password' insertafter='EOF' state=present
+
+
+    - name: changing configuration file
+      become: yes
+      become_user: '{{ uname }}'
+      lineinfile: dest={{ pgdata }}/postgresql.conf backup=yes line="listen_addresses = '*'" insertafter='EOF' state=present
+
+    - pause: seconds=30
+
+    - name: Starting postgres
+      become: yes
+      become_user: '{{ uname }}'
+      shell: |
+        cd /home/{{ uname }}
+        sleep 5
+        cd /home/{{ uname }}
+        source /home/{{ uname }}/.bashrc
+        $PG_CTL start -D {{ pgdata }} -l {{ pgdata }}/pgserver.log
+
+    - name: Creating CC user opdb
+      become: yes
+      ignore_errors: True
+      become_user: '{{ uname }}'
+      shell: |
+        source /home/{{ uname }}/.bashrc
+        $PSQL postgres -c "CREATE USER opdb WITH PASSWORD 'admin';"
+
+
+    - name: Creating metadata-hub user mhubuser
+      ignore_errors: True
+      become: yes
+      become_user: '{{ uname }}'
+      shell: |
+        source /home/{{ uname }}/.bashrc
+        $PSQL postgres -c "CREATE USER mhubuser WITH PASSWORD 'admin';"
+
+
+    - name: Assigning role to users
+      become: yes
+      ignore_errors: True
+      become_user: '{{ uname }}'
+      shell: |
+        source /home/{{ uname }}/.bashrc
+        $PSQL postgres -c "ALTER USER opdb CREATEDB;"
+        $PSQL postgres -c "ALTER USER mhubuser superuser;"
+
+    - name: Display post installation message
+      debug:
+        msg:
+         - 'Postgres DB users for Controcenter and MHUB is created.'
+         - 'Controlcenter DB username is : opdb'
+         - 'Metadata-hub DB username is  : mhubuser'
+         - 'Passowrd is kept default for both users'
+

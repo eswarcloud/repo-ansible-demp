@@ -1,0 +1,55 @@
+# Install and configure driver software for
+# # oracle, microsoft sql server and amazon redshift.
+# # Also setup various ini files and update ~/.profile
+
+- name: Install microsoft sql server driver
+  get_url:
+    url: https://packages.microsoft.com/config/rhel/7/prod.repo
+    dest: /etc/yum.repos.d/mssql-release.repo
+  become: yes
+
+- name: Remove devel headers to avoid conflicts
+  package:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items:
+    - { name: 'unixODBC-utf16', state: 'absent' }
+    - { name: 'unixODBC-utf16-devel', state: 'absent' }
+    - { name: 'msodbcsql', state: 'present' }
+    - { name: 'mssql-tools', state: 'present' }
+    - { name: 'unixODBC-devel', state: 'present' }
+  environment:
+    ACCEPT_EULA: 'Y'
+
+- name: Updated .profile, .bashrc and .bash_profile
+  shell: |
+    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+    echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.profile
+    source ~/.profile
+  become: yes
+  become_user: '{{ ai_user }}'
+
+- name: Install unixODBC with yum
+  yum:
+    name: unixODBC
+    state: present
+
+- name: Install odbc drivers for Oracle:- version 11.2
+  yum:
+    name: /tmp/installables/oracle-instantclient11.2-basic-11.2.0.4.0-1.x86_64.rpm
+    state: present
+
+- name: Install odbc drivers for Oracle:- version 11.2
+  yum:
+    name: /tmp/installables/oracle-instantclient11.2-sqlplus-11.2.0.4.0-1.x86_64.rpm
+    state: present
+
+- name: Copy database configs for oracle, amazon redshift and mssql.
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0644
+  with_items:
+    - { src: ./files/tnsnames.ora, dest: /etc/tnsnames.ora }
+    - { src: ./files/odbc.ini, dest: /etc/odbc.ini }

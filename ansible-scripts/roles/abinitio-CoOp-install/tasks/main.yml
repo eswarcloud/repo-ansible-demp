@@ -1,0 +1,97 @@
+---
+    - name: Creating log file
+      become: no
+      file:
+        dest=/tmp/ansiblelog.txt
+        state=touch
+      delegate_to: localhost
+
+    - name: Updating log file
+      become: no
+      lineinfile: dest=/tmp/ansiblelog.txt state=present line='Hi,\n\nThis is an automated email notification confirming successful completion of Abinitio installation.\n\nBelow steps have been completed.\n\n  - Co-Op prerequisites is completed.\n '
+      delegate_to: localhost
+    
+    - name: Create directory for abinitio installation.
+      file:
+       path: '{{ install_path }}'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+       state: directory
+
+
+    - name: Create working dir
+      file:
+       path: '/tmp/abinitio'
+       state: directory
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+
+
+    - name: Package copy
+      copy:
+       src: '{{ file_path }}/{{ coop_package }}'
+       dest: '/tmp/abinitio'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+
+
+    - name: Extracting Co>Operating System installer
+      unarchive:
+       src: '/tmp/abinitio/{{ coop_package }}'
+       dest: '/tmp/abinitio'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+       remote_src: yes
+      register: untar
+
+    - name: Updating log file
+      become: no
+      lineinfile: dest=/tmp/ansiblelog.txt state=present line='  - Co-Op Package copy and untar Completed\n'
+      when: untar is success
+      delegate_to: localhost
+
+
+    - name: Installing Co>Operating System
+      become: yes
+      become_user: '{{ ai_user }}'
+      shell: |
+        set -o pipefail
+        pkg='{{ coop_package }}'
+        cd /tmp/abinitio/`echo $pkg | awk -F ".tar" '{print $1}'`
+        ./abinst destination={{ install_path }} owner={{ ai_user }} group={{ ai_grp }} app_hub_dest={{ install_path }}/abinitio-app-hub lser=2208 tmpdir=/tmp install_fat=true utility=/tmp/abinitio/work data_dir=/tmp/abinitio/work/data
+
+
+    - name: Populating bash profile
+      lineinfile: dest=/home/{{ ai_user }}/.bashrc backup=yes line='export AB_HOME={{ install_path }}/abinitio-V{{ ai_version }}\nexport AB_APPLICATION_HUB={{ install_path }}/abinitio-app-hub\nexport PATH=$PATH:{{ install_path }}/abinitio-V{{ ai_version }}/bin' insertafter='EOF' state=present
+      register: install
+
+
+    - name: Updating log file
+      become: no
+      lineinfile: dest=/tmp/ansiblelog.txt state=present line='  - Co-Op installation Completed\n\nThanks,\nExusia AICoE team'
+      when: install is success
+      delegate_to: localhost
+
+
+    - name: Deleting working dir post installation
+      file:
+       path: '/tmp/abinitio'
+       state: absent
+
+
+    - name: sending email
+      become: no
+      shell: |
+        cat /tmp/ansiblelog.txt|mailx -s "AbInitio installation report" visheshwar.jha@exusia.com
+      delegate_to: localhost
+
+    - name: Deleting temp files
+      become: no
+      file:
+        path: /tmp/ansiblelog.txt
+        state: absent
+      delegate_to: localhost

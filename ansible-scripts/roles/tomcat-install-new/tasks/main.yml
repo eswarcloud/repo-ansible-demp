@@ -1,0 +1,66 @@
+---
+   - name: Create tomcat_user
+     user:
+       name: '{{ tomcat_user }}'
+       shell: /bin/bash
+
+   - name: create installation Directory
+     file:
+       path: '{{ tomcat_install_dir }}'
+       state: directory
+       mode: 0755
+       owner: '{{ tomcat_user }}'
+       group: '{{ tomcat_user }}'
+
+   - name: create working dir
+     file:
+       path: /home/{{ tomcat_user }}
+       state: directory
+       mode: 0755
+       owner: '{{ tomcat_user }}'
+       group: '{{ tomcat_user }}'
+
+   - name: copying config files
+     template:
+       src: ./templates/tomcat.service.j2
+       dest: /etc/systemd/system/tomcat.service
+
+   - name: installing java
+     yum:
+       name: java-1.8.0-openjdk-devel
+       state: present
+
+   - name: installing java
+     yum:
+       name: wget
+       state: present
+
+   - name: Download tomcat
+     get_url:
+      url: https://archive.apache.org/dist/tomcat/tomcat-8/v8.0.27/bin/apache-tomcat-8.0.27.tar.gz
+      dest: /home/{{ tomcat_user }}
+      mode: 0755
+      owner: '{{ tomcat_user }}'
+      group: '{{ tomcat_user }}'
+
+   - name: Extract archive
+     unarchive:
+       src: /home/{{ tomcat_user }}/apache-tomcat-8.0.27.tar.gz
+       dest: /opt/{{ tomcat_user }}
+       extra_opts: [--strip-components=1]
+       owner: '{{ tomcat_user }}'
+       group: '{{ tomcat_user }}'
+       mode: 0775
+       remote_src: yes
+
+   - name: Populating bash profile
+     become: yes
+     become_user: '{{ tomcat_user }}'
+     lineinfile: dest=/home/{{ tomcat_user }}/.bashrc backup=yes line='export CATALINA_HOME=/opt/{{ tomcat_user }}' insertafter='EOF' state=present
+
+   - name: start service tomcat
+     systemd:
+       state: started
+       daemon_reload: yes
+       name: tomcat
+       enabled: yes

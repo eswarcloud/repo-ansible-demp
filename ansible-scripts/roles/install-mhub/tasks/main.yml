@@ -1,0 +1,70 @@
+   - name: Creating workdir for installation
+     file:
+       path: '/home/{{ ai_user }}/mhub'
+       state: directory
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0755
+
+
+   - name: Creating deployment dir
+     file:
+       path: '/home/{{ ai_user }}/mhub/deploy/config'
+       state: directory
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0755
+
+
+   - name: Copy Mhub deploy_params.config file
+     template:
+       src: './../templates/deploy_params.config.j2'
+       dest: '/home/{{ ai_user }}/mhub/deploy/config/deploy_params.config'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0755
+
+   - name: File Package
+     copy:
+       src: '{{ file_path }}/{{ mhub_package }}'
+       dest: '/home/{{ ai_user }}/mhub'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+
+   - name: Installing MHUB
+     ignore_errors: True
+     become: yes
+     become_user: '{{ ai_user }}'
+     shell: |
+        cd /home/{{ ai_user }}/mhub
+        tar -xvf {{ mhub_package }}
+        source /home/{{ ai_user }}/.bashrc
+        mkdir -p /home/{{ ai_user }}/mhub/mh-install
+        mkdir -p /home/{{ ai_user }}/mhub/mh-local-root
+        pkg={{ mhub_package }}
+
+        cd /home/{{ ai_user }}/mhub/`echo $pkg | awk -F ".tar" '{print $1}'`
+        echo "n" | ./mh-install.ksh -install-root /home/{{ ai_user }}/mhub/mh-install
+        mh-deploy -run -d /home/{{ ai_user }}/mhub/deploy
+
+
+
+   - name: Creating mhub war file
+     become: yes
+     become_user: '{{ ai_user }}'
+     shell: |
+        cd /home/{{ ai_user }}/mhub
+        source /home/{{ ai_user }}/.bashrc
+        export AB_MHUB_HOME=/home/{{ ai_user }}/mhub/mh-install/metadata-hub-3-3-6-0
+        export AB_MHUB_LOCAL_ROOT=/home/{{ ai_user }}/mhub/mh-local-root
+        mh-deploy -run -d /home/{{ ai_user }}/mhub/deploy
+
+
+
+   - name: Display post installation message
+     debug:
+       msg:
+         - 'Mhub war file is created and and placed at below location'
+         - 'Path: /home/{{ ai_user }}/mhub/deploy/config'
+

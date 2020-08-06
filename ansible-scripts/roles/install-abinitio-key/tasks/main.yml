@@ -1,0 +1,27 @@
+---
+   - name: Create keys directory
+     file:
+       path: '/tmp/keys'
+       state: directory
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+
+   - name: Copy key file
+     copy:
+       src: '{{ key_file_dir }}'
+       dest: '/tmp/keys'
+       owner: '{{ ai_user }}'
+       group: '{{ ai_grp }}'
+       mode: 0775
+
+   - name: Installing key
+     become: yes
+     become_user: '{{ ai_user }}'
+     shell: |
+        cd /home/{{ ai_user }}
+        source /home/{{ ai_user }}/.bashrc
+        export AB_HOME={{ ab_home_path }}
+        export AB_APPLICATION_HUB={{ application_hub_path }}
+        export PATH=$PATH:$AB_HOME/bin
+        ab-key -y add /tmp/keys

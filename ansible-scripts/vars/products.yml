@@ -1,0 +1,13 @@
+ai_user: aiuser
+ai_grp: aigroup
+file_path: /home/ansible/packages
+cc_package: ControlCenter.V3-5-1-0.tar.gz
+cc_ver_num: 3.5.1.0
+mhub_package: MetadataHub.V3-3-6-0.tar.gz
+eit_package: AIAppConf.V3-5-1-0.tar
+####Express IT version numer in format 3-5-1-0
+ver_num: 3-5-1-0
+eit_package: AIAppConf.V3-5-1-0.tar
+deployment_name: aiappconf351
+mhub_package: MetadataHub.V3-3-6-0.tar.gz
+bridge_port: 7070

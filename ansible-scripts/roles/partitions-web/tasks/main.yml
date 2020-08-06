@@ -1,0 +1,24 @@
+# Create partitions with parted module
+---
+ - name: Create a new primary partition with a size of 100GB
+   parted:
+    device: /dev/sdc
+    label: gpt
+    name: EME mount
+    number: 1
+    state: present
+    part_start: 1GB
+    part_end: 101GB
+    part_type: primary
+
+
+ - name: Create a new partition with a size of 900GB
+   parted:
+    device: /dev/sdc
+    label: gpt
+    name: psql_data_mount
+    number: 2
+    state: present
+    part_start: 101GB
+    part_end: 1024GB
+    part_type: primary

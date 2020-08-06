@@ -1,0 +1,58 @@
+---
+
+#Installing Postgres
+
+- hosts: database
+  name: Installing Postgres
+  become: yes
+  vars_files:
+    - vars/variables.yml
+  roles: 
+    - postgres-user-create
+    - postgres-packages-install
+    - partitions-web
+    - mount_creation_web
+    - postgres-install
+    - abinitio-user-create
+    - abinitio-packages-install
+    - install-java
+    - abinitio-CoOp-install
+
+#Installing Co-operating system
+
+- hosts: abinitio
+  name: Installing Co>op
+  become: yes
+  vars_files:
+    - vars/variables.yml
+  roles:
+    - abinitio-user-create
+    - partitions
+    - mount_creation
+    - abinitio-packages-install
+    - install-java
+    - abinitio-CoOp-install
+    - databasedrivers
+
+#Installing products
+
+- hosts: abinitio
+  name: Installing AI products
+  become: yes
+  vars_files:
+    - vars/variables.yml
+  roles:
+    - install-cc
+    - install-appconf
+
+#Installing Tomcat and deploying war files.
+
+- hosts: web
+  name: Installing Tomcat
+  become: yes
+  vars_files:
+    - vars/variables.yml
+  roles:
+    - install-java
+    - tomcat-install-new
+    - copy-wars
