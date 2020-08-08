@@ -1,0 +1,11 @@
+---
+
+#Installing Postgres
+
+- name: Installing Co-Op
+  become: yes
+  vars_files:
+    - vars/variables.yml
+  roles:
+    - abinitio-user-create
+    - abinitio-CoOp-install
