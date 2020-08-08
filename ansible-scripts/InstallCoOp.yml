@@ -2,7 +2,8 @@
 
 #Installing Postgres
 
-- name: Installing Co-Op
+- host: abinitio
+  name: Installing Co-Op
   become: yes
   vars_files:
     - vars/variables.yml
